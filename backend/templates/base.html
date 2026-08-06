@@ -1,0 +1,29 @@
+{% load static %}
+<!doctype html>
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}CookPilot{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <header class="site-header">
+    <a class="site-header__brand" href="{% url 'pages:scan' %}">🍳 CookPilot</a>
+    <nav class="site-nav">
+      <a href="{% url 'pages:scan' %}" {% if active_page == 'scan' %}aria-current="page"{% endif %}>Scanner</a>
+      <a href="{% url 'pages:history' %}" {% if active_page == 'history' %}aria-current="page"{% endif %}>Historique</a>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Changer de thème">🌙</button>
+    </nav>
+  </header>
+
+  <main class="page">
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="{% static 'js/theme.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Scanner mon frigo — CookPilot{% endblock %}
+
+{% block content %}
+<h1>Qu'avez-vous dans le frigo ?</h1>
+<p style="color: var(--color-text-muted)">
+  Prenez une photo de vos ingrédients, ou saisissez-les à la main si la photo
+  ne donne rien de bon.
+</p>
+
+<div id="scan-error-slot"></div>
+
+<form class="card" id="scan-form">
+  <div class="field">
+    <label for="photo-input">Photo du frigo / des ingrédients</label>
+    <div class="upload-zone" id="upload-zone" tabindex="0" role="button" aria-label="Choisir une photo">
+      <p id="upload-zone-text">Glissez une photo ici, ou cliquez pour en choisir une</p>
+      <img id="upload-preview" class="upload-zone__preview" style="display: none" alt="Aperçu de la photo">
+    </div>
+    <input type="file" id="photo-input" accept="image/*" style="display: none">
+    <p class="hint">Optionnel si vous listez vos ingrédients manuellement ci-dessous.</p>
+  </div>
+
+  <div class="field">
+    <label for="ingredient-input">Saisie manuelle (fallback)</label>
+    <div style="display: flex; gap: var(--space-2)">
+      <input type="text" id="ingredient-input" placeholder="ex : tomate" autocomplete="off">
+      <button type="button" class="btn btn-secondary" id="add-ingredient-btn">Ajouter</button>
+    </div>
+    <div class="tag-list" id="ingredient-tags" style="margin-top: var(--space-3)"></div>
+  </div>
+
+  <div class="field" style="display:flex; align-items:center; gap: var(--space-2)">
+    <label for="mock-failure" style="margin:0">Démo erreur</label>
+    <select id="mock-failure">
+      <option value="">Aucune (flux normal)</option>
+      <option value="quota">Simuler quota API dépassé</option>
+      <option value="detection">Simuler échec de détection</option>
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-primary" id="submit-btn">Analyser mes ingrédients</button>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/api.js' %}"></script>
+<script src="{% static 'js/alerts.js' %}"></script>
+<script src="{% static 'js/scan.js' %}"></script>
+{% endblock %}

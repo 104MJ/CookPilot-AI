@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Résultat — CookPilot{% endblock %}
+
+{% block content %}
+<div id="result-page" data-session-id="{{ session_id }}">
+  <div style="display:flex; align-items:center; gap: var(--space-3); margin-bottom: var(--space-4)">
+    <h1 style="margin:0">Votre recette</h1>
+    <span class="badge" id="status-badge">…</span>
+  </div>
+
+  <div id="result-error-slot"></div>
+
+  <section id="result-skeleton">
+    <div class="card">
+      <div class="skeleton skeleton-line w-60"></div>
+      <div class="skeleton skeleton-line w-80"></div>
+      <div class="skeleton skeleton-block"></div>
+      <div class="skeleton skeleton-line"></div>
+      <div class="skeleton skeleton-line w-80"></div>
+      <div class="skeleton skeleton-line w-60"></div>
+    </div>
+    <p id="skeleton-status-text" style="color: var(--color-text-muted); text-align:center; margin-top: var(--space-3)">
+      Analyse de votre photo en cours…
+    </p>
+  </section>
+
+  <section id="result-content" style="display:none">
+    <div class="card" style="margin-bottom: var(--space-5)">
+      <h2 style="margin-top:0">Ingrédients repérés</h2>
+      <div class="tag-list" id="ingredient-tags"></div>
+    </div>
+
+    <div id="recipe-list"></div>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/api.js' %}"></script>
+<script src="{% static 'js/alerts.js' %}"></script>
+<script src="{% static 'js/result.js' %}"></script>
+{% endblock %}

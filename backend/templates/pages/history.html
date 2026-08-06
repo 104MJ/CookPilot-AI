@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Historique — CookPilot{% endblock %}
+
+{% block content %}
+<h1>Historique</h1>
+<p style="color: var(--color-text-muted)">Vos analyses et recettes précédentes.</p>
+
+<div id="history-error-slot"></div>
+<div id="history-skeleton">
+  <div class="card skeleton skeleton-block" style="margin-bottom: var(--space-3)"></div>
+  <div class="card skeleton skeleton-block"></div>
+</div>
+<div class="session-list" id="session-list" style="display:none"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/api.js' %}"></script>
+<script src="{% static 'js/alerts.js' %}"></script>
+<script src="{% static 'js/history.js' %}"></script>
+{% endblock %}
