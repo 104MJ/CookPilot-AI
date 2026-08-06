@@ -1,0 +1,79 @@
+services:
+  # 1. Web Service (Django REST API + Frontend)
+  - type: web
+    name: cookpilot-web
+    env: python
+    region: frankfurt
+    buildCommand: |
+      apt-get update && apt-get install -y libgl1 libglib2.0-0 ffmpeg
+      pip install -r backend/requirements.txt
+      python backend/manage.py collectstatic --noinput
+      python backend/manage.py migrate --noinput
+    startCommand: gunicorn --chdir backend config.wsgi:application --bind 0.0.0.0:$PORT --workers 3
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com,localhost,127.0.0.1"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cookpilot-db
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: cookpilot-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: cookpilot-redis
+          property: connectionString
+      - key: MISTRAL_API_KEY
+        sync: false
+      - key: SPOONACULAR_API_KEY
+        sync: false
+
+  # 2. Celery Worker (Async AI & Background Tasks)
+  - type: worker
+    name: cookpilot-worker
+    env: python
+    region: frankfurt
+    buildCommand: |
+      apt-get update && apt-get install -y libgl1 libglib2.0-0 ffmpeg
+      pip install -r backend/requirements.txt
+    startCommand: celery -A config worker --chdir backend --loglevel=info
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        fromService:
+          type: web
+          name: cookpilot-web
+          envVarKey: DJANGO_SECRET_KEY
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cookpilot-db
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: cookpilot-redis
+          property: connectionString
+      - key: MISTRAL_API_KEY
+        sync: false
+      - key: SPOONACULAR_API_KEY
+        sync: false
+
+  # 3. Redis Instance
+  - type: redis
+    name: cookpilot-redis
+    region: frankfurt
+    ipAllowList: []
+
+databases:
+  # 4. Managed PostgreSQL Database
+  - name: cookpilot-db
+    databaseName: cookpilot
+    user: cookpilot
+    region: frankfurt
