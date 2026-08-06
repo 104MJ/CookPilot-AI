@@ -9,6 +9,7 @@ Usage :
 
 import argparse
 
+import torch
 from ultralytics import YOLO
 
 
@@ -23,7 +24,17 @@ def main():
     parser.add_argument(
         "--base-model", default="yolov8n.pt", help="Checkpoint de depart (COCO)"
     )
+    parser.add_argument(
+        "--device",
+        default=None,
+        help="0 pour GPU, cpu pour CPU. Par defaut : GPU si disponible, sinon CPU.",
+    )
     args = parser.parse_args()
+
+    device = args.device
+    if device is None:
+        device = 0 if torch.cuda.is_available() else "cpu"
+    print(f"Utilisation du device : {device} (CUDA disponible : {torch.cuda.is_available()})")
 
     model = YOLO(args.base_model)
     model.train(
@@ -33,6 +44,7 @@ def main():
         batch=args.batch,
         project="runs_ingredients",
         name="yolov8n_ingredients",
+        device=device,
     )
 
     print(
