@@ -1,0 +1,138 @@
+/*
+ * Design tokens — single source of truth for color, spacing, typography.
+ * Light theme is the default; dark theme activates via prefers-color-scheme
+ * or an explicit [data-theme="dark"] on <html> (set by theme.js, persisted
+ * in localStorage so the toggle survives reloads).
+ */
+
+:root {
+  /* Brand */
+  --color-primary-50: #fef3ec;
+  --color-primary-100: #fce0cc;
+  --color-primary-300: #f3a876;
+  --color-primary-500: #e8722f;
+  --color-primary-600: #d15e1c;
+  --color-primary-700: #ac4a16;
+
+  --color-accent-500: #4f8a5b;
+  --color-accent-600: #3d6f47;
+
+  /* Surfaces & text (light) */
+  --color-bg: #faf7f4;
+  --color-surface: #ffffff;
+  --color-surface-raised: #ffffff;
+  --color-border: #e7e0d8;
+  --color-text: #26211c;
+  --color-text-muted: #6b6058;
+  --color-text-on-primary: #ffffff;
+
+  /* Feedback */
+  --color-success-bg: #eaf5ec;
+  --color-success-text: #2c6b3a;
+  --color-warning-bg: #fff4e0;
+  --color-warning-text: #8a5b0a;
+  --color-danger-bg: #fdecec;
+  --color-danger-text: #b13434;
+  --color-danger-border: #f3b9b9;
+
+  /* Skeleton / loading */
+  --color-skeleton-base: #ece5dd;
+  --color-skeleton-shine: #f8f4ef;
+
+  /* Typography */
+  --font-body: "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-display: "Segoe UI", system-ui, -apple-system, sans-serif;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-8: 3rem;
+
+  /* Radii & shadow */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 999px;
+  --shadow-sm: 0 1px 2px rgba(38, 33, 28, 0.06);
+  --shadow-md: 0 4px 16px rgba(38, 33, 28, 0.08);
+
+  --transition-fast: 120ms ease;
+  --transition-base: 200ms ease;
+}
+
+:root[data-theme="dark"] {
+  --color-primary-50: #2b1d12;
+  --color-primary-100: #402a17;
+  --color-primary-300: #c97d3f;
+  --color-primary-500: #f0873e;
+  --color-primary-600: #f5995c;
+  --color-primary-700: #f8b183;
+
+  --color-accent-500: #6bab78;
+  --color-accent-600: #85c091;
+
+  --color-bg: #17140f;
+  --color-surface: #211c16;
+  --color-surface-raised: #2a241c;
+  --color-border: #3a332a;
+  --color-text: #f3ede4;
+  --color-text-muted: #b3a89b;
+  --color-text-on-primary: #1a1108;
+
+  --color-success-bg: #1c2f20;
+  --color-success-text: #8fd39c;
+  --color-warning-bg: #332409;
+  --color-warning-text: #f0c476;
+  --color-danger-bg: #331616;
+  --color-danger-text: #f29b9b;
+  --color-danger-border: #5c2626;
+
+  --color-skeleton-base: #2c2620;
+  --color-skeleton-shine: #373027;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    --color-primary-50: #2b1d12;
+    --color-primary-100: #402a17;
+    --color-primary-300: #c97d3f;
+    --color-primary-500: #f0873e;
+    --color-primary-600: #f5995c;
+    --color-primary-700: #f8b183;
+
+    --color-accent-500: #6bab78;
+    --color-accent-600: #85c091;
+
+    --color-bg: #17140f;
+    --color-surface: #211c16;
+    --color-surface-raised: #2a241c;
+    --color-border: #3a332a;
+    --color-text: #f3ede4;
+    --color-text-muted: #b3a89b;
+    --color-text-on-primary: #1a1108;
+
+    --color-success-bg: #1c2f20;
+    --color-success-text: #8fd39c;
+    --color-warning-bg: #332409;
+    --color-warning-text: #f0c476;
+    --color-danger-bg: #331616;
+    --color-danger-text: #f29b9b;
+    --color-danger-border: #5c2626;
+
+    --color-skeleton-base: #2c2620;
+    --color-skeleton-shine: #373027;
+  }
+}
