@@ -4,7 +4,12 @@ download_dataset.py. Prevu pour tourner sur Google Colab (GPU gratuit) ou
 toute machine disposant d'un GPU.
 
 Usage :
-    python train_yolov8.py --data dataset/data.yaml --epochs 30
+    python train_yolov8.py --data dataset/data.yaml --epochs 15
+
+Par defaut : imgsz=416 et cache=True pour rester rapide meme sur un GPU
+gratuit (Colab T4) avec un dataset de plusieurs dizaines de milliers
+d'images (le goulot d'etranglement est souvent la lecture/decodage des
+images, pas le calcul GPU lui-meme).
 """
 
 import argparse
@@ -18,9 +23,13 @@ def main():
     parser.add_argument(
         "--data", default="dataset/data.yaml", help="Chemin vers data.yaml"
     )
-    parser.add_argument("--epochs", type=int, default=30)
-    parser.add_argument("--imgsz", type=int, default=640)
-    parser.add_argument("--batch", type=int, default=16)
+    parser.add_argument("--epochs", type=int, default=15)
+    parser.add_argument("--imgsz", type=int, default=416)
+    parser.add_argument("--batch", type=int, default=32)
+    parser.add_argument("--workers", type=int, default=4)
+    parser.add_argument(
+        "--no-cache", action="store_true", help="Desactive le cache image (RAM)"
+    )
     parser.add_argument(
         "--base-model", default="yolov8n.pt", help="Checkpoint de depart (COCO)"
     )
@@ -42,6 +51,8 @@ def main():
         epochs=args.epochs,
         imgsz=args.imgsz,
         batch=args.batch,
+        workers=args.workers,
+        cache=not args.no_cache,
         project="runs_ingredients",
         name="yolov8n_ingredients",
         device=device,
