@@ -20,15 +20,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN addgroup --system django \
+RUN dos2unix /app/entrypoint.sh \
+    && chmod +x /app/entrypoint.sh \
+    && addgroup --system django \
     && adduser --system --ingroup django django \
     && mkdir -p staticfiles media \
-    && sed -i 's/\r$//' entrypoint.sh \
-    && chmod +x entrypoint.sh \
     && chown -R django:django /app
 
 USER django
 
 EXPOSE 8000
 
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]

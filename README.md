@@ -88,11 +88,11 @@ erDiagram
 
 ### Installation et demarrage
 
-1. Cloner le depot et basculer sur la branche :
+1. Cloner le depot :
 ```bash
 git clone https://github.com/104MJ/CookPilot-AI.git
 cd CookPilot-AI
-git checkout danielle
+git checkout main
 ```
 
 2. Creer le fichier d'environnement local :
@@ -126,8 +126,11 @@ cd backend
 python manage.py test
 ```
 
-## Deployment et Securite
+## Deploiement, Securite et Optimisations Cloud
 
-- Les cles secrets (`.env`) sont exclues du depot Git via `.gitignore`.
-- Le deploiement Cloud est gere automatiquement sur Render via `render.yaml`.
-- L'integration continue est geree par GitHub Actions (`.github/workflows/ci.yml`).
+- **Securite** : Les cles secrets (`.env`) sont exclues du depot Git via `.gitignore`.
+- **Deploiement Cloud** : Gere automatiquement sur Render via `render.yaml`.
+- **Integration Continue** : Gere par GitHub Actions (`.github/workflows/ci.yml`).
+- **Optimisation Render (Limite 512 Mo RAM)** :
+  - **Priorite a la saisie manuelle (Mode Leger)** : Assure une consommation memoire reduite (< 150 Mo RAM) pour s'adapter parfaitement aux limites de l'hebergeur gratuit Render.
+  - **Entrainement deporte sur Google Colab** : L'entrainement lourd du modele YOLOv8 (Membre 1) est effectue hors-ligne sur GPU Colab, puis les poids optimises (`best.pt`) sont embarques dans le backend.
