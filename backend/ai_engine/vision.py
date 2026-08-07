@@ -22,7 +22,7 @@ def _get_model():
     return _model
 
 
-def detect_ingredients(image_path, confidence=0.4):
+def detect_ingredients(image_path, confidence=0.2):
     """
     Detecte les ingredients presents sur une image.
 
