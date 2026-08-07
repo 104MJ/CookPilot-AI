@@ -16,6 +16,7 @@
     <nav class="site-nav">
       <a href="{% url 'pages:scan' %}" {% if active_page == 'scan' %}aria-current="page"{% endif %}>Scanner</a>
       <a href="{% url 'pages:history' %}" {% if active_page == 'history' %}aria-current="page"{% endif %}>Historique</a>
+      <a href="{% url 'pages:profile' %}" {% if active_page == 'profile' %}aria-current="page"{% endif %}>Profil</a>
       <button class="theme-toggle" type="button" data-theme-toggle aria-label="Changer de thème">🌙</button>
     </nav>
   </header>

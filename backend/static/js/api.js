@@ -98,5 +98,27 @@ const CookPilotAPI = (function () {
     });
   }
 
-  return { getSession, listSessions, submitScan, pollSessionUntilDone, rateRecipe };
+  /** GET /api/profile/ */
+  async function getProfile() {
+    return apiFetch(`/api/profile/`);
+  }
+
+  /** PATCH /api/profile/  { diet, allergies, skill_level, time_available_minutes } */
+  async function updateProfile(data) {
+    return apiFetch(`/api/profile/`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+  }
+
+  return {
+    getSession,
+    listSessions,
+    submitScan,
+    pollSessionUntilDone,
+    rateRecipe,
+    getProfile,
+    updateProfile,
+  };
 })();

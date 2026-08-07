@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Mon profil — CookPilot{% endblock %}
+
+{% block content %}
+<h1>Mon profil</h1>
+<p style="color: var(--color-text-muted)">
+  Ces informations personnalisent les recettes proposées (régime, allergies,
+  niveau de cuisine, temps disponible).
+</p>
+
+<div id="profile-alert-slot"></div>
+
+<form class="card" id="profile-form">
+  <div class="field">
+    <label for="diet-select">Régime alimentaire</label>
+    <select id="diet-select">
+      <option value="none">Aucun régime particulier</option>
+      <option value="vegetarian">Végétarien</option>
+      <option value="vegan">Végan</option>
+      <option value="gluten_free">Sans gluten</option>
+      <option value="halal">Halal</option>
+      <option value="kosher">Casher</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="allergy-input">Allergies</label>
+    <div style="display: flex; gap: var(--space-2)">
+      <input type="text" id="allergy-input" placeholder="ex : arachides" autocomplete="off">
+      <button type="button" class="btn btn-secondary" id="add-allergy-btn">Ajouter</button>
+    </div>
+    <div class="tag-list" id="allergy-tags" style="margin-top: var(--space-3)"></div>
+  </div>
+
+  <div class="field">
+    <label for="skill-select">Niveau de cuisine</label>
+    <select id="skill-select">
+      <option value="beginner">Débutant</option>
+      <option value="intermediate">Intermédiaire</option>
+      <option value="advanced">Avancé</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="time-input">Temps disponible (minutes)</label>
+    <input type="text" inputmode="numeric" id="time-input" placeholder="30">
+  </div>
+
+  <button type="submit" class="btn btn-primary" id="profile-save-btn">Enregistrer</button>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/api.js' %}"></script>
+<script src="{% static 'js/alerts.js' %}"></script>
+<script src="{% static 'js/profile.js' %}"></script>
+{% endblock %}

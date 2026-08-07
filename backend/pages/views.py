@@ -13,3 +13,7 @@ def result(request, session_id):
 
 def history(request):
     return render(request, "pages/history.html", {"active_page": "history"})
+
+
+def profile(request):
+    return render(request, "pages/profile.html", {"active_page": "profile"})
