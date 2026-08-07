@@ -38,12 +38,17 @@ Contraintes :
 - Temps disponible : {time_available} minutes
 - Priorise les ingredients qui perissent bientot
 
+Estime aussi les calories et macronutriments totaux de la recette (approximatif,
+base sur ta connaissance nutritionnelle generale).
+
 Reponds UNIQUEMENT en JSON, avec exactement ce format :
 {{
   "title": "nom de la recette",
   "ingredients_used": [{{"name": "riz", "quantity": "200g"}}],
   "ingredients_missing": ["sel"],
-  "steps": ["etape 1", "etape 2"]
+  "steps": ["etape 1", "etape 2"],
+  "total_calories": 450,
+  "nutrition_breakdown": {{"protein_g": 20, "carbs_g": 60, "fat_g": 10, "fiber_g": 4}}
 }}"""
 
 
@@ -82,5 +87,7 @@ def generate_recipe(ingredients, profile):
     data.setdefault("ingredients_used", [])
     data.setdefault("ingredients_missing", [])
     data.setdefault("steps", [])
+    data.setdefault("total_calories", None)
+    data.setdefault("nutrition_breakdown", {})
     data["raw_response"] = raw_content
     return data
