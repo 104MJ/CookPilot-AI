@@ -122,6 +122,13 @@
     });
     card.appendChild(steps);
 
+    if (recipe.personalization_notes) {
+      const notes = document.createElement("p");
+      notes.className = "hint";
+      notes.textContent = `💡 Adapté à votre profil : ${recipe.personalization_notes}`;
+      card.appendChild(notes);
+    }
+
     const ratingContainer = document.createElement("div");
     card.appendChild(ratingContainer);
     renderRating(ratingContainer, recipe);

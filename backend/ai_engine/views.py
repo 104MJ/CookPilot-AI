@@ -38,6 +38,7 @@ def serialize_recipe(recipe):
         "rating": recipe.rating,
         "total_calories": recipe.total_calories,
         "nutrition_breakdown": recipe.nutrition_breakdown,
+        "personalization_notes": recipe.personalization_notes,
     }
 
 
@@ -135,6 +136,20 @@ class SessionListCreateView(APIView):
         history.save(update_fields=["detected_ingredients"])
         return detected
 
+    def _get_taste_history(self, user):
+        """Recettes aimees/pas aimees par le passe, pour personnaliser la generation."""
+        liked = list(
+            Recipe.objects.filter(history__user=user, rating=1)
+            .order_by("-created_at")
+            .values_list("title", flat=True)[:5]
+        )
+        disliked = list(
+            Recipe.objects.filter(history__user=user, rating=-1)
+            .order_by("-created_at")
+            .values_list("title", flat=True)[:5]
+        )
+        return {"liked": liked, "disliked": disliked}
+
     def _generate_and_respond(self, history, ingredients, request):
         """Appelle Mistral, cree la Recipe, met a jour le statut."""
         profile = request.user.profile
@@ -144,9 +159,10 @@ class SessionListCreateView(APIView):
             "skill_level": profile.skill_level,
             "time_available_minutes": profile.time_available_minutes,
         }
+        taste_history = self._get_taste_history(request.user)
 
         try:
-            result = generate_recipe(ingredients, profile_data)
+            result = generate_recipe(ingredients, profile_data, taste_history)
         except RecipeGenerationError:
             history.status = History.Status.FAILED
             history.error_message = QUOTA_ERROR_MESSAGE
@@ -165,6 +181,7 @@ class SessionListCreateView(APIView):
             raw_response=result["raw_response"],
             total_calories=result.get("total_calories"),
             nutrition_breakdown=result.get("nutrition_breakdown") or {},
+            personalization_notes=result.get("personalization_notes") or "",
         )
         history.status = History.Status.DONE
         history.save(update_fields=["status"])

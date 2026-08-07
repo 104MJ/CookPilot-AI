@@ -57,6 +57,8 @@ class Recipe(models.Model):
     rating = models.SmallIntegerField(null=True, blank=True)  # -1 dislike, 1 like
     total_calories = models.PositiveIntegerField(null=True, blank=True)
     nutrition_breakdown = models.JSONField(default=dict, blank=True)
+    # explique les choix lies au profil (allergies exclues, regime, gouts passes...)
+    personalization_notes = models.TextField(blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

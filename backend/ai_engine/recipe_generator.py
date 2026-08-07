@@ -13,7 +13,7 @@ class RecipeGenerationError(Exception):
     """Erreur lors de la generation (appel API ou reponse invalide)."""
 
 
-def _build_prompt(ingredients, profile):
+def _build_prompt(ingredients, profile, taste_history=None):
     """Construit le prompt texte envoye a Mistral."""
     diet = profile.get("diet", "none")
     allergies = profile.get("allergies") or []
@@ -29,6 +29,16 @@ def _build_prompt(ingredients, profile):
         ingredients_lines.append(line)
     ingredients_text = ", ".join(ingredients_lines)
 
+    # apprentissage des gouts : recettes aimees/pas aimees par le passe
+    taste_section = ""
+    if taste_history:
+        liked = taste_history.get("liked") or []
+        disliked = taste_history.get("disliked") or []
+        if liked:
+            taste_section += f"\n- L'utilisateur a aime : {', '.join(liked)}. Inspire-toi de ce style."
+        if disliked:
+            taste_section += f"\n- L'utilisateur n'a pas aime : {', '.join(disliked)}. Evite ce type de plat."
+
     return f"""Tu es un chef cuisinier. Propose UNE recette avec ces ingredients : {ingredients_text}.
 
 Contraintes :
@@ -36,10 +46,15 @@ Contraintes :
 - Allergies a eviter : {', '.join(allergies) if allergies else 'aucune'}
 - Niveau de cuisine : {skill_level}
 - Temps disponible : {time_available} minutes
-- Priorise les ingredients qui perissent bientot
+- Priorise les ingredients qui perissent bientot{taste_section}
 
 Estime aussi les calories et macronutriments totaux de la recette (approximatif,
 base sur ta connaissance nutritionnelle generale).
+
+Explique aussi brievement (2-3 phrases max) les choix lies au profil : pourquoi
+un ingredient a ete ecarte ou une quantite adaptee (regime, allergie, gout passe
+aime/evite, peremption). Sois concret et nomme les ingredients/contraintes
+concernes, pas de formule generique.
 
 Reponds UNIQUEMENT en JSON, avec exactement ce format :
 {{
@@ -48,22 +63,24 @@ Reponds UNIQUEMENT en JSON, avec exactement ce format :
   "ingredients_missing": ["sel"],
   "steps": ["etape 1", "etape 2"],
   "total_calories": 450,
-  "nutrition_breakdown": {{"protein_g": 20, "carbs_g": 60, "fat_g": 10, "fiber_g": 4}}
+  "nutrition_breakdown": {{"protein_g": 20, "carbs_g": 60, "fat_g": 10, "fiber_g": 4}},
+  "personalization_notes": "explication courte des choix lies au profil"
 }}"""
 
 
-def generate_recipe(ingredients, profile):
+def generate_recipe(ingredients, profile, taste_history=None):
     """
     Genere une recette via Mistral.
 
     ingredients : liste de dicts {"name": str, "expires_at": str|None}
     profile : dict (diet, allergies, skill_level, time_available_minutes)
+    taste_history : dict optionnel {"liked": [titres], "disliked": [titres]}
 
     Retourne un dict (title, ingredients_used, ingredients_missing, steps,
     raw_response). Leve RecipeGenerationError si l'appel echoue.
     """
     client = Mistral(api_key=settings.MISTRAL_API_KEY)
-    prompt = _build_prompt(ingredients, profile)
+    prompt = _build_prompt(ingredients, profile, taste_history)
 
     try:
         response = client.chat.complete(
@@ -89,5 +106,6 @@ def generate_recipe(ingredients, profile):
     data.setdefault("steps", [])
     data.setdefault("total_calories", None)
     data.setdefault("nutrition_breakdown", {})
+    data.setdefault("personalization_notes", "")
     data["raw_response"] = raw_content
     return data

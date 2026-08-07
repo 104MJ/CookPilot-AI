@@ -98,6 +98,27 @@ class SessionViewsTests(APITestCase):
         self.assertEqual(recipe_data["nutrition_breakdown"]["protein_g"], 10)
 
     @patch("ai_engine.views.generate_recipe")
+    def test_create_session_includes_personalization_notes(self, mock_generate):
+        mock_generate.return_value = {
+            "title": "Riz aux legumes",
+            "ingredients_used": [{"name": "riz", "quantity": "200g"}],
+            "ingredients_missing": [],
+            "steps": ["Cuire le riz"],
+            "personalization_notes": "Pas de lait ajoute (allergie signalee).",
+            "raw_response": "{}",
+        }
+
+        response = self.client.post(
+            reverse("session-list-create"), {"manual_ingredients": '["riz"]'}
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        recipe_data = response.data["recipes"][0]
+        self.assertEqual(
+            recipe_data["personalization_notes"], "Pas de lait ajoute (allergie signalee)."
+        )
+
+    @patch("ai_engine.views.generate_recipe")
     def test_create_session_mistral_error(self, mock_generate):
         mock_generate.side_effect = RecipeGenerationError("boom")
 
@@ -166,3 +187,29 @@ class SessionViewsTests(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["rating"], 1)
+
+    @patch("ai_engine.views.generate_recipe")
+    def test_taste_history_influences_next_generation(self, mock_generate):
+        mock_generate.return_value = {
+            "title": "Riz aux legumes",
+            "ingredients_used": [],
+            "ingredients_missing": [],
+            "steps": [],
+            "raw_response": "{}",
+        }
+
+        # premiere recette, notee positivement
+        first_resp = self.client.post(
+            reverse("session-list-create"), {"manual_ingredients": '["riz"]'}
+        )
+        recipe_id = first_resp.data["recipes"][0]["id"]
+        self.client.post(
+            reverse("recipe-rating", args=[recipe_id]), {"value": 1}, format="json"
+        )
+
+        # deuxieme recette : generate_recipe doit recevoir l'historique des gouts
+        self.client.post(reverse("session-list-create"), {"manual_ingredients": '["riz"]'})
+
+        last_call_args = mock_generate.call_args
+        taste_history = last_call_args.args[2]
+        self.assertIn("Riz aux legumes", taste_history["liked"])
