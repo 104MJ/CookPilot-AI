@@ -174,31 +174,71 @@ const CookPilotAPI = (function () {
       return structuredClone(session);
     }
 
-    session.detected_ingredients = [
-      { name: "poivron", expires_at: "2026-08-12" },
-      { name: "riz", expires_at: null },
-    ];
+    // Pas de vraie vision cote client : si des ingredients manuels ont ete
+    // saisis on s'en sert tels quels ; sinon (photo seule) on simule une
+    // detection en tirant un sous-ensemble aleatoire d'un pool d'ingredients
+    // courants, plutot qu'une paire fixe qui reviendrait a chaque fois.
+    if (session.manual_ingredients.length === 0) {
+      session.detected_ingredients = simulateDetection();
+    }
     session.status = "done";
-    session.recipes = [
-      {
-        id: store.nextId + 900,
-        title: "Riz sauté au poivron",
-        ingredients_used: ["poivron", "riz"].concat(session.manual_ingredients.map((i) => i.name)),
-        ingredients_missing: ["sauce soja"],
-        steps: [
-          "Cuire le riz, laisser tiédir.",
-          "Faire revenir le poivron émincé 4 min.",
-          "Ajouter le riz, sauter 3 min à feu vif.",
-          "Assaisonner et servir.",
-        ],
-        rating: null,
-        total_calories: 380,
-        nutrition_breakdown: { protein_g: 8, carbs_g: 62, fat_g: 9, fiber_g: 4 },
-      },
-    ];
+    session.recipes = [buildMockRecipe(session, store.nextId + 900)];
     saveStore(store);
     onUpdate(structuredClone(session));
     return structuredClone(session);
+  }
+
+  const COMMON_INGREDIENT_POOL = [
+    "tomate",
+    "oeuf",
+    "oignon",
+    "poivron",
+    "courgette",
+    "carotte",
+    "fromage râpé",
+    "riz",
+    "pâtes",
+    "poulet",
+    "champignon",
+    "épinard",
+  ];
+
+  function simulateDetection() {
+    const shuffled = [...COMMON_INGREDIENT_POOL].sort(() => Math.random() - 0.5);
+    const count = 2 + Math.floor(Math.random() * 2); // 2 ou 3 ingredients
+    return shuffled.slice(0, count).map((name) => ({ name, expires_at: null }));
+  }
+
+  /**
+   * Builds a recipe title/steps from whatever ingredients the session
+   * actually has (detected + manual), instead of a fixed dish — so testing
+   * the scan form with different ingredients gives a different result.
+   * `ingredients_used` matches the real API shape: [{ name, quantity }].
+   */
+  function buildMockRecipe(session, recipeId) {
+    const names = [
+      ...session.detected_ingredients.map((i) => i.name),
+      ...session.manual_ingredients.map((i) => i.name),
+    ];
+    const pool = names.length > 0 ? names : ["ingrédients du frigo"];
+    const title =
+      pool.length >= 2 ? `Poêlée de ${pool[0]} et ${pool[1]}` : `Recette rapide au ${pool[0]}`;
+
+    return {
+      id: recipeId,
+      title,
+      ingredients_used: pool.map((name) => ({ name, quantity: "" })),
+      ingredients_missing: [],
+      steps: [
+        `Laver et préparer : ${pool.join(", ")}.`,
+        "Faire chauffer un filet d'huile dans une poêle.",
+        `Faire revenir ${pool.join(", ")} pendant 8 à 10 minutes à feu moyen.`,
+        "Assaisonner selon votre goût et servir chaud.",
+      ],
+      rating: null,
+      total_calories: null,
+      nutrition_breakdown: {},
+    };
   }
 
   /** POST /api/recipes/<id>/rating/  { value: -1 | 1 } */
