@@ -13,13 +13,13 @@ class ProfileModelTest(TestCase):
         )
 
     def test_profile_creation(self):
-        profile = Profile.objects.create(
-            user=self.user,
-            diet=Profile.Diet.VEGETARIAN,
-            allergies=["arachides", "lactose"],
-            skill_level=Profile.SkillLevel.INTERMEDIATE,
-            time_available_minutes=25
-        )
+        profile, _ = Profile.objects.get_or_create(user=self.user)
+        profile.diet = Profile.Diet.VEGETARIAN
+        profile.allergies = ["arachides", "lactose"]
+        profile.skill_level = Profile.SkillLevel.INTERMEDIATE
+        profile.time_available_minutes = 25
+        profile.save()
+
         self.assertEqual(profile.user.username, "testuser")
         self.assertEqual(profile.diet, Profile.Diet.VEGETARIAN)
         self.assertIn("arachides", profile.allergies)
