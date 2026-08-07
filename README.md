@@ -4,10 +4,10 @@ Plateforme web de generation de recettes anti-gaspillage basee sur la vision par
 
 ## Membres de l'equipe
 
-| Nom et Prenom | Role | Responsabilites |
-| --- | --- | --- |
-| Jacqueline MAPENZI | Membre 1 | Backend Django, Moteur Vision YOLOv8, LLM Mistral, API Spoonacular, Celery |
-| Aya SGHAIER | Membre 2 | UI/UX Design System, Interface utilisateur, Skeletons d'attente, Notation |
+| Nom et Prenom                  | Role     | Responsabilites                                                                 |
+| ------------------------------ | -------- | ------------------------------------------------------------------------------- |
+| Jacqueline MAPENZI             | Membre 1 | Backend Django, Moteur Vision YOLOv8, LLM Mistral, API Spoonacular, Celery      |
+| Aya SGHAIER                    | Membre 2 | UI/UX Design System, Interface utilisateur, Skeletons d'attente, Notation       |
 | Danielle Jamila Koagne Ngankam | Membre 3 | DevOps, Docker Compose, CI/CD GitHub Actions, Deploiement Render, Documentation |
 
 - URL de production : https://cookpilot-ai.onrender.com
@@ -16,15 +16,6 @@ Plateforme web de generation de recettes anti-gaspillage basee sur la vision par
 ## Architecture et fonctionnement
 
 Le systeme combine une analyse d'image par vision artificielle et la generation de recettes personnalisees sous contraintes.
-
-| Composant | Technologie | Role |
-| --- | --- | --- |
-| Backend API | Django 5.2 LTS, DRF 3.16 | Gestion des profils, inventaire, orchestration des requetes |
-| Vision Engine | YOLOv8 (ultralytics) | Detection automatique des ingredients depuis une photo |
-| Moteur LLM | Mistral AI | Generation de recettes au format JSON sous contraintes d'allergies |
-| Nutrition | API Spoonacular | Calcul automatique des calories et valeurs nutritionnelles |
-| Async Worker | Celery & Redis | Traitement asynchrone des requetes d'inference longues |
-| Base de donnees | PostgreSQL 16 | Persistance des profils, ingredients et evaluations |
 
 ```mermaid
 flowchart TD
@@ -86,27 +77,32 @@ erDiagram
 ## Guide de lancement local
 
 ### Prerequis
+
 - Docker Desktop
 - Git
 
 ### Installation et demarrage
 
 1. Cloner le depot :
+
 ```bash
 git clone https://github.com/104MJ/CookPilot-AI.git
 cd CookPilot-AI
 ```
 
 2. Creer le fichier d'environnement local :
+
 ```bash
 cp .env.example .env
 ```
 
 3. Completer les cles d'API dans `.env` :
+
 - `MISTRAL_API_KEY` : obtenue sur https://console.mistral.ai/ (rubrique API Keys)
 - `SPOONACULAR_API_KEY` : obtenue sur https://spoonacular.com/food-api (compte gratuit)
 
 4. Lancer les conteneurs :
+
 ```bash
 docker compose up --build
 ```
@@ -120,16 +116,19 @@ Le dossier `training/` contient les scripts pour fine-tuner le modele de detecti
 Dataset utilise : Ingredients detection YoloV8 (Roboflow Universe, 112 classes alimentaires, 46 674 images, licence CC BY 4.0).
 
 1. Installer les dependances d'entrainement :
+
 ```bash
 pip install -r training/requirements.txt
 ```
 
 2. Telecharger le dataset (necessite une cle Roboflow gratuite) :
+
 ```bash
 ROBOFLOW_API_KEY=xxxx python training/download_dataset.py
 ```
 
 3. Lancer l'entrainement :
+
 ```bash
 python training/train_yolov8.py --data dataset/data.yaml --epochs 30
 ```
@@ -139,11 +138,13 @@ python training/train_yolov8.py --data dataset/data.yaml --epochs 30
 ## Execution des tests unitaires
 
 ### Execution via Docker (recommande)
+
 ```bash
 docker compose exec web python manage.py test
 ```
 
 ### Resultat attendu
+
 ```
 Found 5 test(s).
 test_profile_creation .......................... ok
