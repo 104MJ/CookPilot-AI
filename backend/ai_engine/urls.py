@@ -2,8 +2,10 @@
 
 from django.urls import path
 
-from .views import GenerateRecipeView
+from .views import RecipeRatingView, SessionDetailView, SessionListCreateView
 
 urlpatterns = [
-    path("recipes/generate/", GenerateRecipeView.as_view(), name="generate-recipe"),
+    path("sessions/", SessionListCreateView.as_view(), name="session-list-create"),
+    path("sessions/<int:pk>/", SessionDetailView.as_view(), name="session-detail"),
+    path("recipes/<int:pk>/rating/", RecipeRatingView.as_view(), name="recipe-rating"),
 ]

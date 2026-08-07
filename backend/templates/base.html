@@ -10,6 +10,7 @@
   {% block extra_css %}{% endblock %}
 </head>
 <body>
+  {% csrf_token %}
   <header class="site-header">
     <a class="site-header__brand" href="{% url 'pages:scan' %}">🍳 CookPilot</a>
     <nav class="site-nav">

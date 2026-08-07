@@ -34,6 +34,7 @@ class History(models.Model):
     status = models.CharField(
         max_length=20, choices=Status.choices, default=Status.PENDING
     )
+    error_message = models.TextField(blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
