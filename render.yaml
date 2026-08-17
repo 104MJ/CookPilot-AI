@@ -39,33 +39,38 @@ services:
         sync: false
 
   # 2. Celery Worker (Async AI & Background Tasks)
-  - type: worker
-    name: cookpilot-worker
-    env: python
-    region: frankfurt
-    buildCommand: |
-      apt-get update && apt-get install -y libgl1 libglib2.0-0 libsm6 libxext6 libxrender1 libxcb1 ffmpeg
-      pip install -r backend/requirements.txt
-    startCommand: celery -A config worker --chdir backend --loglevel=info
-    envVars:
-      - key: DJANGO_SECRET_KEY
-        fromService:
-          type: web
-          name: cookpilot-web
-          envVarKey: DJANGO_SECRET_KEY
-      - key: DATABASE_URL
-        fromDatabase:
-          name: cookpilot-db
-          property: connectionString
-      - key: CELERY_BROKER_URL
-        fromService:
-          type: redis
-          name: cookpilot-redis
-          property: connectionString
-      - key: MISTRAL_API_KEY
-        sync: false
-      - key: SPOONACULAR_API_KEY
-        sync: false
+  # DESACTIVE pour le deploiement gratuit : Render facture les Background
+  # Workers a partir de 7$/mois (pas de tier gratuit), et aucune tache Celery
+  # reelle n'est encore branchee cote code (generate_recipe/detect_ingredients
+  # tournent en synchrone). A reactiver si le traitement async est implemente
+  # et qu'un budget est disponible.
+  # - type: worker
+  #   name: cookpilot-worker
+  #   env: python
+  #   region: frankfurt
+  #   buildCommand: |
+  #     apt-get update && apt-get install -y libgl1 libglib2.0-0 libsm6 libxext6 libxrender1 libxcb1 ffmpeg
+  #     pip install -r backend/requirements.txt
+  #   startCommand: celery -A config worker --chdir backend --loglevel=info
+  #   envVars:
+  #     - key: DJANGO_SECRET_KEY
+  #       fromService:
+  #         type: web
+  #         name: cookpilot-web
+  #         envVarKey: DJANGO_SECRET_KEY
+  #     - key: DATABASE_URL
+  #       fromDatabase:
+  #         name: cookpilot-db
+  #         property: connectionString
+  #     - key: CELERY_BROKER_URL
+  #       fromService:
+  #         type: redis
+  #         name: cookpilot-redis
+  #         property: connectionString
+  #     - key: MISTRAL_API_KEY
+  #       sync: false
+  #     - key: SPOONACULAR_API_KEY
+  #       sync: false
 
   # 3. Redis Instance
   - type: redis
