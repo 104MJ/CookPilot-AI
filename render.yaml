@@ -3,6 +3,7 @@ services:
   - type: web
     name: cookpilot-web
     env: python
+    plan: free
     region: frankfurt
     buildCommand: |
       apt-get update && apt-get install -y libgl1 libglib2.0-0 libsm6 libxext6 libxrender1 libxcb1 ffmpeg
@@ -75,6 +76,7 @@ services:
   # 3. Redis Instance
   - type: redis
     name: cookpilot-redis
+    plan: free
     region: frankfurt
     ipAllowList: []
 
@@ -84,3 +86,4 @@ databases:
     databaseName: cookpilot
     user: cookpilot
     region: frankfurt
+    plan: free
