@@ -12,19 +12,27 @@
 <body>
   {% csrf_token %}
   <header class="site-header">
-    <a class="site-header__brand" href="{% url 'pages:scan' %}">🍳 CookPilot</a>
+    <a class="site-header__brand" href="{% url 'pages:scan' %}">
+      <img src="https://unpkg.com/lucide-static@latest/icons/chef-hat.svg" alt="" style="width:22px;height:22px">
+      CookPilot
+    </a>
     <nav class="site-nav">
       <a href="{% url 'pages:scan' %}" {% if active_page == 'scan' %}aria-current="page"{% endif %}>Scanner</a>
       <a href="{% url 'pages:history' %}" {% if active_page == 'history' %}aria-current="page"{% endif %}>Historique</a>
       <a href="{% url 'pages:profile' %}" {% if active_page == 'profile' %}aria-current="page"{% endif %}>Profil</a>
       {% if user.is_authenticated %}
       <span class="hint">{{ user.username }}</span>
-      <a href="{% url 'logout' %}">Déconnexion</a>
+      <form method="post" action="{% url 'logout' %}" class="logout-form">
+        {% csrf_token %}
+        <button type="submit" class="nav-link-button">Déconnexion</button>
+      </form>
       {% else %}
       <a href="{% url 'login' %}">Connexion</a>
       <a href="{% url 'signup' %}">Créer un compte</a>
       {% endif %}
-      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Changer de thème">🌙</button>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Changer de thème">
+        <img data-theme-icon src="https://unpkg.com/lucide-static@latest/icons/moon.svg" alt="" style="width:16px;height:16px">
+      </button>
     </nav>
   </header>
 

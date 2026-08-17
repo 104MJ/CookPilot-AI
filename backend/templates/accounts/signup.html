@@ -2,7 +2,10 @@
 {% block title %}Créer un compte — CookPilot{% endblock %}
 
 {% block content %}
-<h1>Créer un compte</h1>
+<h1 class="page-heading">
+  <img src="https://unpkg.com/lucide-static@latest/icons/user-plus.svg" alt="">
+  Créer un compte
+</h1>
 
 <form class="card" method="post">
   {% csrf_token %}

@@ -12,6 +12,7 @@ import logging
 
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -70,6 +71,13 @@ def _parse_manual_ingredients(request):
     return [{"name": name, "expires_at": None} for name in raw]
 
 
+class SessionPagination(PageNumberPagination):
+    """Pagination de l'historique : 10 sessions par page."""
+
+    page_size = 10
+    page_size_query_param = "page_size"
+
+
 class SessionListCreateView(APIView):
     """GET /api/sessions/ et POST /api/sessions/."""
 
@@ -77,7 +85,11 @@ class SessionListCreateView(APIView):
 
     def get(self, request):
         sessions = History.objects.filter(user=request.user).order_by("-created_at")
-        return Response([serialize_session(s, request) for s in sessions])
+        paginator = SessionPagination()
+        page = paginator.paginate_queryset(sessions, request)
+        return paginator.get_paginated_response(
+            [serialize_session(s, request) for s in page]
+        )
 
     def post(self, request):
         photo = request.FILES.get("photo")

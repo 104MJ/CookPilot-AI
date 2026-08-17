@@ -26,6 +26,16 @@
   --color-text-muted: #6b6058;
   --color-text-on-primary: #ffffff;
 
+  /* Theme "frigo" : intérieur froid + inox */
+  --color-fridge-interior-1: #eef7f7;
+  --color-fridge-interior-2: #dcedf0;
+  --color-steel: #c7d2d6;
+  --color-steel-dark: #8f9da3;
+  --color-shelf-glass: rgba(255, 255, 255, 0.55);
+  --color-frost-glow: rgba(159, 224, 224, 0.45);
+  --light-on: #7be08a;
+  --light-off: #d8d2c9;
+
   /* Feedback */
   --color-success-bg: #eaf5ec;
   --color-success-text: #2c6b3a;
@@ -102,6 +112,15 @@
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
+
+  --color-fridge-interior-1: #1c2b2e;
+  --color-fridge-interior-2: #17140f;
+  --color-steel: #3a4247;
+  --color-steel-dark: #22282b;
+  --color-shelf-glass: rgba(42, 36, 28, 0.55);
+  --color-frost-glow: rgba(80, 150, 160, 0.35);
+  --light-on: #6fe089;
+  --light-off: #4a433a;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -134,5 +153,14 @@
 
     --color-skeleton-base: #2c2620;
     --color-skeleton-shine: #373027;
+
+    --color-fridge-interior-1: #1c2b2e;
+    --color-fridge-interior-2: #17140f;
+    --color-steel: #3a4247;
+    --color-steel-dark: #22282b;
+    --color-shelf-glass: rgba(42, 36, 28, 0.55);
+    --color-frost-glow: rgba(80, 150, 160, 0.35);
+    --light-on: #6fe089;
+    --light-off: #4a433a;
   }
 }

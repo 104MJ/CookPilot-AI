@@ -152,3 +152,15 @@ class SignupLoginTests(TestCase):
         response = self.client.get(reverse("pages:scan"))
         self.assertEqual(response.status_code, 302)
         self.assertIn(reverse("login"), response.url)
+
+    def test_logout_requires_post(self):
+        User.objects.create_user(username="existant", password="motdepasse-complexe-123")
+        self.client.login(username="existant", password="motdepasse-complexe-123")
+
+        # GET est refuse depuis Django 5 (CSRF) -> doit etre un POST
+        get_response = self.client.get(reverse("logout"))
+        self.assertEqual(get_response.status_code, 405)
+
+        post_response = self.client.post(reverse("logout"))
+        self.assertEqual(post_response.status_code, 302)
+        self.assertFalse(post_response.wsgi_request.user.is_authenticated)

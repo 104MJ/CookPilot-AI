@@ -1,0 +1,40 @@
+<svg viewBox="0 0 320 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustration d'un frigo retro">
+  <defs>
+    <linearGradient id="bodyFill" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#AEEBDD"/>
+      <stop offset="100%" stop-color="#7BC9BB"/>
+    </linearGradient>
+    <linearGradient id="handleFill" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#F3F7F7"/>
+      <stop offset="100%" stop-color="#B8C4C6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- pot de fleur -->
+  <path d="M64 58 L96 58 L90 78 L70 78 Z" fill="#D97B4F"/>
+  <ellipse cx="80" cy="58" rx="17" ry="5" fill="#C96A3E"/>
+  <ellipse cx="66" cy="42" rx="14" ry="9" fill="#6FAE5B" transform="rotate(-20 66 42)"/>
+  <ellipse cx="82" cy="34" rx="14" ry="9" fill="#7EC06A" transform="rotate(5 82 34)"/>
+  <ellipse cx="96" cy="42" rx="14" ry="9" fill="#6FAE5B" transform="rotate(25 96 42)"/>
+
+  <!-- corps du frigo -->
+  <rect x="40" y="70" width="240" height="330" rx="42" fill="url(#bodyFill)"/>
+
+  <!-- ligne du compartiment congelateur -->
+  <rect x="40" y="146" width="240" height="7" rx="3.5" fill="#5FA898"/>
+  <circle cx="266" cy="108" r="6" fill="#C9D3D6"/>
+  <circle cx="266" cy="330" r="6" fill="#C9D3D6"/>
+
+  <!-- poignee -->
+  <rect x="248" y="184" width="16" height="110" rx="8" fill="url(#handleFill)"/>
+
+  <!-- coeur decoratif -->
+  <text x="130" y="260" font-size="34" fill="#F3A8B5" font-family="system-ui, sans-serif">&#9829;</text>
+
+  <!-- logo -->
+  <text x="160" y="112" font-size="16" font-weight="700" fill="#3D6F63" font-family="system-ui, sans-serif" text-anchor="middle">CookPilot</text>
+
+  <!-- pieds -->
+  <ellipse cx="92" cy="404" rx="15" ry="6" fill="#4A4A4A" opacity="0.25"/>
+  <ellipse cx="268" cy="404" rx="15" ry="6" fill="#4A4A4A" opacity="0.25"/>
+</svg>

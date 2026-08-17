@@ -57,9 +57,9 @@ const CookPilotAPI = (function () {
     return apiFetch(`/api/sessions/${id}/`);
   }
 
-  /** GET /api/sessions/ */
-  async function listSessions() {
-    return apiFetch(`/api/sessions/`);
+  /** GET /api/sessions/?page=N -> { count, next, previous, results } */
+  async function listSessions(page) {
+    return apiFetch(page ? `/api/sessions/?page=${page}` : `/api/sessions/`);
   }
 
   /** POST /api/sessions/  (multipart: photo | manual_ingredients) */

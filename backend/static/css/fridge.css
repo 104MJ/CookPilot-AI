@@ -1,0 +1,108 @@
+/* Porte de frigo interactive (page scan) */
+
+.fridge-decor {
+  position: relative;
+}
+
+.fridge-decor__icon {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  opacity: 0.5;
+  filter: invert(46%) sepia(11%) saturate(383%) hue-rotate(101deg);
+  pointer-events: none;
+}
+
+.fridge-decor__icon:nth-child(1) { top: 8px; left: 6%; transform: rotate(-10deg); }
+.fridge-decor__icon:nth-child(2) { top: 8px; right: 6%; transform: rotate(10deg); }
+
+.fridge-scene {
+  position: relative;
+  margin-bottom: var(--space-6);
+}
+
+.fridge-door {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  cursor: pointer;
+  transition: transform 400ms ease, opacity 400ms ease;
+}
+
+.fridge-door:hover .fridge-door__art {
+  transform: translateY(-4px);
+}
+
+.fridge-door__art {
+  width: 300px;
+  max-width: 75%;
+  height: auto;
+  margin-bottom: var(--space-3);
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.18));
+  transition: transform var(--transition-base);
+}
+
+.fridge-door__title {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.fridge-door__hint {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  margin: 0;
+}
+
+.fridge-door.is-closing {
+  transform: scale(0.94);
+  opacity: 0;
+}
+
+.fridge-scene__content {
+  display: none;
+  position: relative;
+}
+
+.fridge-scene.is-open .fridge-scene__content::before {
+  content: "";
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 480px;
+  max-width: 140%;
+  height: 260px;
+  background: radial-gradient(ellipse at top, var(--color-frost-glow), transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.fridge-scene.is-open .fridge-door {
+  display: none;
+}
+
+.fridge-scene.is-open .fridge-scene__content {
+  display: block;
+}
+
+/* etagere : separateur visuel entre les sections du frigo ouvert */
+.fridge-shelf {
+  height: 6px;
+  margin: var(--space-5) 0;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, transparent, var(--color-steel), transparent);
+  box-shadow: 0 6px 10px -4px rgba(0, 0, 0, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fridge-door {
+    transition: none;
+  }
+}

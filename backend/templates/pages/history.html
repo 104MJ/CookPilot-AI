@@ -3,7 +3,10 @@
 {% block title %}Historique — CookPilot{% endblock %}
 
 {% block content %}
-<h1>Historique</h1>
+<h1 class="page-heading">
+  <img src="https://unpkg.com/lucide-static@latest/icons/history.svg" alt="">
+  Historique
+</h1>
 <p style="color: var(--color-text-muted)">Vos analyses et recettes précédentes.</p>
 
 <div id="history-error-slot"></div>
@@ -12,6 +15,12 @@
   <div class="card skeleton skeleton-block"></div>
 </div>
 <div class="session-list" id="session-list" style="display:none"></div>
+
+<div class="history-pagination" id="history-pagination" style="display:none">
+  <button type="button" class="btn btn-secondary" id="history-prev">Précédent</button>
+  <span class="hint" id="history-page-label"></span>
+  <button type="button" class="btn btn-secondary" id="history-next">Suivant</button>
+</div>
 {% endblock %}
 
 {% block extra_js %}

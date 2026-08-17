@@ -5,9 +5,12 @@
   function applyTheme(theme) {
     root.setAttribute("data-theme", theme);
     const toggle = document.querySelector("[data-theme-toggle]");
+    const icon = document.querySelector("[data-theme-icon]");
     if (toggle) {
-      toggle.textContent = theme === "dark" ? "☀️" : "🌙";
       toggle.setAttribute("aria-label", theme === "dark" ? "Passer en thème clair" : "Passer en thème sombre");
+    }
+    if (icon) {
+      icon.src = `https://unpkg.com/lucide-static@latest/icons/${theme === "dark" ? "sun" : "moon"}.svg`;
     }
   }
 

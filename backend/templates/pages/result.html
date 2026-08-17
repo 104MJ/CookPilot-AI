@@ -5,7 +5,10 @@
 {% block content %}
 <div id="result-page" data-session-id="{{ session_id }}">
   <div style="display:flex; align-items:center; gap: var(--space-3); margin-bottom: var(--space-4)">
-    <h1 style="margin:0">Votre recette</h1>
+    <h1 class="page-heading" style="margin:0">
+      <img src="https://unpkg.com/lucide-static@latest/icons/utensils.svg" alt="">
+      Votre recette
+    </h1>
     <span class="badge" id="status-badge">…</span>
   </div>
 

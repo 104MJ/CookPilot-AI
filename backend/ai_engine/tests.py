@@ -165,7 +165,8 @@ class SessionViewsTests(APITestCase):
 
         response = self.client.get(reverse("session-list-create"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(len(response.data["results"]), 1)
 
     @patch("ai_engine.views.generate_recipe")
     def test_rate_recipe(self, mock_generate):

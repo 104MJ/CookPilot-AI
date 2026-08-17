@@ -2,6 +2,10 @@
   const skeleton = document.getElementById("history-skeleton");
   const list = document.getElementById("session-list");
   const errorSlot = document.getElementById("history-error-slot");
+  const pagination = document.getElementById("history-pagination");
+  const prevBtn = document.getElementById("history-prev");
+  const nextBtn = document.getElementById("history-next");
+  const pageLabel = document.getElementById("history-page-label");
 
   const STATUS_LABELS = {
     pending: "En attente",
@@ -9,6 +13,8 @@
     done: "Terminé",
     failed: "Échec",
   };
+
+  let currentPage = 1;
 
   function formatDate(iso) {
     return new Date(iso).toLocaleDateString("fr-FR", {
@@ -20,7 +26,7 @@
 
   function renderSession(session) {
     const item = document.createElement("a");
-    item.className = "card session-item";
+    item.className = "session-item";
     item.href = `/sessions/${session.id}/`;
 
     const left = document.createElement("div");
@@ -42,18 +48,29 @@
     return item;
   }
 
-  async function init() {
+  async function loadPage(page) {
+    skeleton.style.display = "block";
+    list.style.display = "none";
+    pagination.style.display = "none";
+
     try {
-      const sessions = await CookPilotAPI.listSessions();
+      const data = await CookPilotAPI.listSessions(page);
+      currentPage = page;
       skeleton.style.display = "none";
       list.style.display = "flex";
+      list.innerHTML = "";
 
-      if (sessions.length === 0) {
-        list.innerHTML = '<p class="hint">Aucune analyse pour le moment.</p>';
+      if (data.results.length === 0) {
+        list.innerHTML = '<p class="hint" style="padding: var(--space-4)">Aucune analyse pour le moment.</p>';
         return;
       }
 
-      sessions.forEach((session) => list.appendChild(renderSession(session)));
+      data.results.forEach((session) => list.appendChild(renderSession(session)));
+
+      pagination.style.display = data.next || data.previous ? "flex" : "none";
+      prevBtn.disabled = !data.previous;
+      nextBtn.disabled = !data.next;
+      pageLabel.textContent = `Page ${currentPage}`;
     } catch (err) {
       skeleton.style.display = "none";
       renderAlert(errorSlot, {
@@ -63,5 +80,8 @@
     }
   }
 
-  init();
+  prevBtn.addEventListener("click", () => loadPage(currentPage - 1));
+  nextBtn.addEventListener("click", () => loadPage(currentPage + 1));
+
+  loadPage(1);
 })();
