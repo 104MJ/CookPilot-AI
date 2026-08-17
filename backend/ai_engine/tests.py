@@ -1,6 +1,18 @@
+"""Tests pour les modeles et les vues de l'app ai_engine."""
+
+from unittest.mock import patch
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from ai_engine.models import History, Recipe
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase
+
+from accounts.models import Profile
+
+from .models import History, Recipe
+from .recipe_generator import RecipeGenerationError
+from .vision import detect_ingredients
 
 User = get_user_model()
 
@@ -34,19 +46,6 @@ class AIEngineModelTest(TestCase):
         self.assertEqual(recipe.total_calories, 350)
         self.assertEqual(recipe.rating, 1)
         self.assertEqual(str(recipe), "Omelette Tomate-Fromage")
-
-
-"""Tests pour les vues sessions/recipes."""
-
-from unittest.mock import patch
-
-from django.urls import reverse
-from rest_framework import status
-from rest_framework.test import APITestCase
-
-from accounts.models import Profile
-
-from .recipe_generator import RecipeGenerationError
 
 
 class SessionViewsTests(APITestCase):
@@ -213,3 +212,28 @@ class SessionViewsTests(APITestCase):
         last_call_args = mock_generate.call_args
         taste_history = last_call_args.args[2]
         self.assertIn("Riz aux legumes", taste_history["liked"])
+
+
+class DetectIngredientsFilterTests(TestCase):
+    """detect_ingredients() doit ignorer les classes bruitees du dataset fusionne."""
+
+    class _FakeBox:
+        def __init__(self, class_id):
+            self.cls = [class_id]
+
+    class _FakeResult:
+        def __init__(self, names, boxes):
+            self.names = names
+            self.boxes = boxes
+
+    @patch("ai_engine.vision._get_model")
+    def test_filters_numeric_and_undefined_classes(self, mock_get_model):
+        names = {0: "tomate", 1: "11", 2: "undefined", 3: "oignon"}
+        boxes = [self._FakeBox(class_id) for class_id in names]
+        mock_get_model.return_value.predict.return_value = [
+            self._FakeResult(names, boxes)
+        ]
+
+        result = detect_ingredients("fake/path.jpg")
+
+        self.assertEqual(result, ["oignon", "tomate"])

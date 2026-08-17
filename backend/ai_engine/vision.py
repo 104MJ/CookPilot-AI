@@ -22,6 +22,11 @@ def _get_model():
     return _model
 
 
+def _is_noise_class(name):
+    """Classes bruitees issues du dataset fusionne (IDs numeriques, 'undefined')."""
+    return name.isdigit() or name.strip().lower() == "undefined"
+
+
 def detect_ingredients(image_path, confidence=0.2):
     """
     Detecte les ingredients presents sur une image.
@@ -30,6 +35,7 @@ def detect_ingredients(image_path, confidence=0.2):
     confidence : seuil minimum de confiance
 
     Retourne une liste triee de noms d'ingredients detectes (uniques).
+    Les classes bruitees du dataset (IDs numeriques, "undefined") sont ignorees.
     """
     model = _get_model()
     results = model.predict(source=image_path, conf=confidence, verbose=False)
@@ -38,6 +44,9 @@ def detect_ingredients(image_path, confidence=0.2):
     detected = set()
     for box in results[0].boxes:
         class_id = int(box.cls[0])
-        detected.add(names[class_id])
+        name = names[class_id]
+        if _is_noise_class(name):
+            continue
+        detected.add(name)
 
     return sorted(detected)
