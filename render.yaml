@@ -5,7 +5,7 @@ services:
     env: python
     region: frankfurt
     buildCommand: |
-      apt-get update && apt-get install -y libgl1 libglib2.0-0 ffmpeg
+      apt-get update && apt-get install -y libgl1 libglib2.0-0 libsm6 libxext6 libxrender1 libxcb1 ffmpeg
       pip install -r backend/requirements.txt
       python backend/manage.py collectstatic --noinput
       python backend/manage.py migrate --noinput
@@ -17,6 +17,8 @@ services:
         value: "False"
       - key: ALLOWED_HOSTS
         value: ".onrender.com,localhost,127.0.0.1"
+      - key: CSRF_TRUSTED_ORIGINS
+        value: "https://cookpilot-ai.onrender.com"
       - key: DATABASE_URL
         fromDatabase:
           name: cookpilot-db
@@ -42,7 +44,7 @@ services:
     env: python
     region: frankfurt
     buildCommand: |
-      apt-get update && apt-get install -y libgl1 libglib2.0-0 ffmpeg
+      apt-get update && apt-get install -y libgl1 libglib2.0-0 libsm6 libxext6 libxrender1 libxcb1 ffmpeg
       pip install -r backend/requirements.txt
     startCommand: celery -A config worker --chdir backend --loglevel=info
     envVars:
