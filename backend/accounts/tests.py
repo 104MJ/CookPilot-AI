@@ -97,3 +97,58 @@ class ProfileViewTests(APITestCase):
         response = self.client.get(reverse("profile"))
         # SessionAuthentication en premier -> pas de WWW-Authenticate -> 403 (pas 401)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class SignupLoginTests(TestCase):
+    """Inscription et connexion via les vues Django classiques (pas l'API DRF)."""
+
+    def test_signup_creates_user_and_logs_in(self):
+        response = self.client.post(
+            reverse("signup"),
+            {
+                "username": "nouvel_utilisateur",
+                "password1": "motdepasse-complexe-123",
+                "password2": "motdepasse-complexe-123",
+            },
+        )
+        self.assertEqual(response.status_code, 302)  # redirection apres succes
+        self.assertTrue(User.objects.filter(username="nouvel_utilisateur").exists())
+        # Profile cree automatiquement par le signal accounts.signals
+        user = User.objects.get(username="nouvel_utilisateur")
+        self.assertTrue(Profile.objects.filter(user=user).exists())
+        # connecte automatiquement apres inscription
+        self.assertTrue(response.wsgi_request.user.is_authenticated)
+
+    def test_signup_password_mismatch_rejected(self):
+        response = self.client.post(
+            reverse("signup"),
+            {
+                "username": "test2",
+                "password1": "motdepasse-complexe-123",
+                "password2": "autre-mot-de-passe",
+            },
+        )
+        self.assertEqual(response.status_code, 200)  # reste sur le formulaire
+        self.assertFalse(User.objects.filter(username="test2").exists())
+
+    def test_login_valid_credentials(self):
+        User.objects.create_user(username="existant", password="motdepasse-complexe-123")
+        response = self.client.post(
+            reverse("login"),
+            {"username": "existant", "password": "motdepasse-complexe-123"},
+        )
+        self.assertEqual(response.status_code, 302)
+
+    def test_login_invalid_credentials_rejected(self):
+        User.objects.create_user(username="existant", password="motdepasse-complexe-123")
+        response = self.client.post(
+            reverse("login"),
+            {"username": "existant", "password": "mauvais-mot-de-passe"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
+
+    def test_scan_page_redirects_anonymous_to_login(self):
+        response = self.client.get(reverse("pages:scan"))
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("login"), response.url)

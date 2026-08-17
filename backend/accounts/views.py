@@ -1,11 +1,28 @@
-"""Vue API : consultation et mise a jour du profil utilisateur."""
+"""Vues profil (API) et authentification (inscription)."""
 
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Profile
+
+
+class SignupView(CreateView):
+    """Creation de compte : formulaire Django standard, connexion auto apres inscription."""
+
+    form_class = UserCreationForm
+    template_name = "accounts/signup.html"
+    success_url = reverse_lazy("pages:scan")
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        login(self.request, self.object)  # connecte l'utilisateur direct apres inscription
+        return response
 
 
 def serialize_profile(profile):

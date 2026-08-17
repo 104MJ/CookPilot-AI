@@ -170,6 +170,7 @@ a {
 input[type="text"],
 input[type="date"],
 input[type="search"],
+input[type="password"],
 textarea,
 select {
   width: 100%;

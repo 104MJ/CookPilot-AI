@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Connexion — CookPilot{% endblock %}
+
+{% block content %}
+<h1>Connexion</h1>
+
+{% if form.errors %}
+<div class="alert alert-danger" role="alert">
+  <p style="margin:0">Nom d'utilisateur ou mot de passe incorrect.</p>
+</div>
+{% endif %}
+
+<form class="card" method="post">
+  {% csrf_token %}
+  <div class="field">
+    <label for="id_username">Nom d'utilisateur</label>
+    {{ form.username }}
+  </div>
+  <div class="field">
+    <label for="id_password">Mot de passe</label>
+    {{ form.password }}
+  </div>
+  <button type="submit" class="btn btn-primary">Se connecter</button>
+</form>
+
+<p class="hint" style="margin-top: var(--space-4)">
+  Pas encore de compte ? <a href="{% url 'signup' %}">Créer un compte</a>
+</p>
+{% endblock %}

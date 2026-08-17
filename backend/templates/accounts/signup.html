@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Créer un compte — CookPilot{% endblock %}
+
+{% block content %}
+<h1>Créer un compte</h1>
+
+<form class="card" method="post">
+  {% csrf_token %}
+  <div class="field">
+    <label for="id_username">Nom d'utilisateur</label>
+    {{ form.username }}
+    {% if form.username.errors %}<p class="hint">{{ form.username.errors|join:", " }}</p>{% endif %}
+  </div>
+  <div class="field">
+    <label for="id_password1">Mot de passe</label>
+    {{ form.password1 }}
+    {% if form.password1.errors %}<p class="hint">{{ form.password1.errors|join:", " }}</p>{% endif %}
+  </div>
+  <div class="field">
+    <label for="id_password2">Confirmer le mot de passe</label>
+    {{ form.password2 }}
+    {% if form.password2.errors %}<p class="hint">{{ form.password2.errors|join:", " }}</p>{% endif %}
+  </div>
+  <button type="submit" class="btn btn-primary">Créer mon compte</button>
+</form>
+
+<p class="hint" style="margin-top: var(--space-4)">
+  Déjà un compte ? <a href="{% url 'login' %}">Se connecter</a>
+</p>
+{% endblock %}

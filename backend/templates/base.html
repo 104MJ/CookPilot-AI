@@ -17,6 +17,13 @@
       <a href="{% url 'pages:scan' %}" {% if active_page == 'scan' %}aria-current="page"{% endif %}>Scanner</a>
       <a href="{% url 'pages:history' %}" {% if active_page == 'history' %}aria-current="page"{% endif %}>Historique</a>
       <a href="{% url 'pages:profile' %}" {% if active_page == 'profile' %}aria-current="page"{% endif %}>Profil</a>
+      {% if user.is_authenticated %}
+      <span class="hint">{{ user.username }}</span>
+      <a href="{% url 'logout' %}">Déconnexion</a>
+      {% else %}
+      <a href="{% url 'login' %}">Connexion</a>
+      <a href="{% url 'signup' %}">Créer un compte</a>
+      {% endif %}
       <button class="theme-toggle" type="button" data-theme-toggle aria-label="Changer de thème">🌙</button>
     </nav>
   </header>

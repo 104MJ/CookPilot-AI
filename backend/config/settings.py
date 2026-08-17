@@ -21,6 +21,11 @@ DEBUG = env.bool("DEBUG", default=False)
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
+# Authentification
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "pages:scan"
+LOGOUT_REDIRECT_URL = "pages:scan"
+
 # Render (et la plupart des PaaS) terminent le HTTPS en amont et forwardent en
 # HTTP interne. Sans ca, Django croit que la requete est en HTTP -> CSRF/cookies
 # secure cassent en prod alors que tout marche en local.
